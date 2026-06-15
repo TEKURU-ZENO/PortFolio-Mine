@@ -7,7 +7,7 @@ const MONO = "'JetBrains Mono', monospace";
 const PUBLICATIONS = [
   {
     id: 'biogpt-di',
-    title: 'Graph-Augmented LLM Framework for Drug Interaction Prediction and Explainable Clinical Reports',
+    title: 'BioGPT-DI: An AI-Powered System for Drug Interaction Prediction and Explainable Clinical Report Generation',
     journal: 'Published in IJIREEICE (2025)',
     status: 'PEER REVIEWED',
     year: '2025',

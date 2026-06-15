@@ -44,6 +44,25 @@ const TIMELINE = [
   },
 ];
 
+const EXPERIENCES = [
+  {
+    role: 'Technical and Creative Intern',
+    company: 'Regacore',
+    duration: 'JUN 2026 — PRESENT',
+    color: '#10B981',
+    desc: 'Building premium Frontend interfaces and deploying AI/ML models and pipelines tailored for healthcare and Longevity applications. Developing algorithms to track biological biomarkers and optimize diagnostic pipelines.',
+    tags: ['Biomarkers', 'Healthcare AI', 'Longevity ML', 'AI Pipelines', 'React', 'Next.js'],
+  },
+  {
+    role: 'AI/ML Developer Intern',
+    company: 'Sri Jayaram Infotech Pvt Ltd',
+    duration: 'JAN 2026 — JUN 2026',
+    color: '#7C3AED',
+    desc: 'Worked on AksharabyasaAI, an AI-powered handwriting assessment platform. Built OCR and computer vision pipelines for handwritten character recognition and automated feedback generation.',
+    tags: ['OCR', 'Computer Vision', 'PyTorch', 'Image Processing', 'Automated Feedback'],
+  }
+];
+
 const ACHIEVEMENTS = [
   { title: 'Top 1000 Builders', detail: 'OpenAI × Outskill Program', icon: '🤖', glow: 'rgba(124,58,237,0.15)', color: '#7C3AED' },
   { title: 'Top 50 Teams', detail: 'Web of Innovation Hackathon', icon: '🏆', glow: 'rgba(34,211,238,0.15)', color: '#22D3EE' },
@@ -150,55 +169,58 @@ export function JourneySection() {
         </motion.div>
 
         {/* ── SECTION 1: WORK EXPERIENCE ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.75 }}
-          style={{
-            background: 'linear-gradient(145deg, rgba(11,16,32,0.8) 0%, rgba(5,8,22,0.8) 100%)',
-            border: '1px solid rgba(124,58,237,0.15)',
-            borderRadius: '16px',
-            padding: '40px',
-            marginBottom: '64px',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: '#7C3AED' }} />
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-            <div>
-              <span style={{ fontFamily: MONO, fontSize: '10px', color: '#7C3AED', letterSpacing: '0.14em', fontWeight: 600 }}>WORK EXPERIENCE</span>
-              <h3 style={{ fontFamily: FONT, fontSize: '24px', fontWeight: 800, color: '#F8FAFC', letterSpacing: '-0.02em', marginTop: '8px', margin: 0 }}>
-                AI/ML Developer Intern
-              </h3>
-              <div style={{ fontFamily: FONT, fontSize: '15px', color: '#A78BFA', marginTop: '4px', fontWeight: 600 }}>
-                Jayaram Infotech
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '64px' }}>
+          {EXPERIENCES.map((exp, idx) => (
+            <motion.div
+              key={exp.role + exp.company}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.75, delay: idx * 0.15 }}
+              style={{
+                background: 'linear-gradient(145deg, rgba(11,16,32,0.8) 0%, rgba(5,8,22,0.8) 100%)',
+                border: `1px solid ${exp.color}26`,
+                borderRadius: '16px',
+                padding: '40px',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: exp.color }} />
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+                <div>
+                  <span style={{ fontFamily: MONO, fontSize: '10px', color: exp.color, letterSpacing: '0.14em', fontWeight: 600 }}>WORK EXPERIENCE</span>
+                  <h3 style={{ fontFamily: FONT, fontSize: '24px', fontWeight: 800, color: '#F8FAFC', letterSpacing: '-0.02em', marginTop: '8px', margin: 0 }}>
+                    {exp.role}
+                  </h3>
+                  <div style={{ fontFamily: FONT, fontSize: '15px', color: '#A78BFA', marginTop: '4px', fontWeight: 600 }}>
+                    {exp.company}
+                  </div>
+                </div>
+                <div style={{ fontFamily: MONO, fontSize: '11px', color: '#64748B', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '6px 14px' }}>
+                  {exp.duration}
+                </div>
               </div>
-            </div>
-            <div style={{ fontFamily: MONO, fontSize: '11px', color: '#475569', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', padding: '6px 14px' }}>
-              NOV 2024 — PRESENT
-            </div>
-          </div>
 
-          <p style={{ fontFamily: FONT, fontSize: '16px', color: '#CBD5E1', lineHeight: 1.7, marginBottom: '20px', maxWidth: '800px' }}>
-            Worked on <strong>AksharabyasaAI</strong>, an AI-powered handwriting assessment platform.
-            Built OCR and computer vision pipelines for handwritten character recognition and automated feedback generation.
-          </p>
+              <p style={{ fontFamily: FONT, fontSize: '16px', color: '#CBD5E1', lineHeight: 1.7, marginBottom: '20px', maxWidth: '800px' }}>
+                {exp.desc}
+              </p>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {['OCR', 'Computer Vision', 'PyTorch', 'Image Processing', 'Automated Feedback'].map(tag => (
-              <span key={tag} style={{
-                fontFamily: MONO, fontSize: '10px', color: '#CBD5E1',
-                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: '4px', padding: '4px 10px', letterSpacing: '0.05em'
-              }}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        </motion.div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {exp.tags.map(tag => (
+                  <span key={tag} style={{
+                    fontFamily: MONO, fontSize: '10px', color: '#CBD5E1',
+                    background: `${exp.color}0D`, border: `1px solid ${exp.color}1E`,
+                    borderRadius: '4px', padding: '4px 10px', letterSpacing: '0.05em'
+                  }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* ── SECTION 2: TIMELINE & ACHIEVEMENTS GRID ── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '64px', alignItems: 'start' }}>

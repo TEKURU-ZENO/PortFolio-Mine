@@ -51,6 +51,7 @@ const NODES: Node[] = [
   { id: 'multiomics',   x: 685, y: 445, r: 14, label: 'Multi-Omics',  color: '#10B981', category: 'compbio', isHub: false },
   { id: 'biogpt',       x: 820, y: 450, r: 14, label: 'BioGPT',       color: '#10B981', category: 'compbio', isHub: false },
   { id: 'digitaltwins', x: 800, y: 490, r: 14, label: 'Digital Twins',color: '#10B981', category: 'compbio', isHub: false },
+  { id: 'biomarkers',   x: 880, y: 460, r: 15, label: 'Biomarkers',   color: '#10B981', category: 'compbio', isHub: false },
 ];
 
 const EDGES: Edge[] = [
@@ -59,7 +60,7 @@ const EDGES: Edge[] = [
   { a: 'agentic', b: 'langgraph' }, { a: 'agentic', b: 'llmsystems' }, { a: 'agentic', b: 'rag' }, { a: 'agentic', b: 'memory' }, { a: 'agentic', b: 'planning' },
   { a: 'ml', b: 'pytorch' }, { a: 'ml', b: 'huggingface' }, { a: 'ml', b: 'gnns' }, { a: 'ml', b: 'causalml' }, { a: 'ml', b: 'xai' },
   { a: 'cloud', b: 'k8s' }, { a: 'cloud', b: 'kafka' }, { a: 'cloud', b: 'redis' }, { a: 'cloud', b: 'docker' }, { a: 'cloud', b: 'microservices' },
-  { a: 'compbio', b: 'scanpy' }, { a: 'compbio', b: 'networkx' }, { a: 'compbio', b: 'multiomics' }, { a: 'compbio', b: 'biogpt' }, { a: 'compbio', b: 'digitaltwins' },
+  { a: 'compbio', b: 'scanpy' }, { a: 'compbio', b: 'networkx' }, { a: 'compbio', b: 'multiomics' }, { a: 'compbio', b: 'biogpt' }, { a: 'compbio', b: 'digitaltwins' }, { a: 'compbio', b: 'biomarkers' },
 
   // Cross-category connections
   { a: 'py', b: 'ml' }, { a: 'py', b: 'compbio' },
