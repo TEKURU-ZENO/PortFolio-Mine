@@ -181,9 +181,9 @@ export function HeroSection() {
               zIndex: 3,
             }} />
 
-            {/* Photo background image (will load once user uploads file) */}
+            {/* Photo background image */}
             <img 
-              src="/src/dev_mehta_profile.png" 
+              src="/src/dev_mehta_profile.jpg" 
               alt="Dev Mehta"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
