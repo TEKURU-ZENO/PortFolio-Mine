@@ -183,7 +183,7 @@ export function HeroSection() {
 
             {/* Photo background image */}
             <img 
-              src="/src/dev_mehta_profile.jpg" 
+              src="/dev_mehta_profile.jpg" 
               alt="Dev Mehta"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
