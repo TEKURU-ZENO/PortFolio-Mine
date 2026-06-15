@@ -111,17 +111,20 @@ export function HeroSection() {
             >
               Research
             </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.025, borderColor: 'rgba(100,116,139,0.5)', color: '#CBD5E1' }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                fontFamily: FONT, fontSize: '14px', fontWeight: 600, color: '#94A3B8',
-                background: 'transparent', border: '1px solid rgba(100,116,139,0.22)',
-                borderRadius: '8px', padding: '14px 26px', cursor: 'pointer',
-              }}
-            >
-              Resume
-            </motion.button>
+            <a href="/resume.pdf" download="Dev_Mehta_Resume.pdf" style={{ textDecoration: 'none' }}>
+              <motion.button
+                whileHover={{ scale: 1.025, borderColor: 'rgba(100,116,139,0.5)', color: '#CBD5E1' }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: FONT, fontSize: '14px', fontWeight: 600, color: '#94A3B8',
+                  background: 'transparent', border: '1px solid rgba(100,116,139,0.22)',
+                  borderRadius: '8px', padding: '14px 26px', cursor: 'pointer',
+                  width: '100%',
+                }}
+              >
+                Resume
+              </motion.button>
+            </a>
           </div>
 
           {/* Quick stat strip */}
