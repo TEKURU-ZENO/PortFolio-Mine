@@ -47,7 +47,7 @@ const TIMELINE = [
 const ACHIEVEMENTS = [
   { title: 'Top 1000 Builders', detail: 'OpenAI × Outskill Program', icon: '🤖', glow: 'rgba(124,58,237,0.15)', color: '#7C3AED' },
   { title: 'Top 50 Teams', detail: 'Web of Innovation Hackathon', icon: '🏆', glow: 'rgba(34,211,238,0.15)', color: '#22D3EE' },
-  { title: 'Rank 1', detail: 'Overall Proficiency Award', icon: '🥇', glow: 'rgba(16,185,129,0.15)', color: '#10B981' },
+  { title: 'Rank 1', detail: 'Overall Proficiency Annual Day Award (2025-26)', icon: '🥇', glow: 'rgba(16,185,129,0.15)', color: '#10B981' },
   { title: 'President', detail: 'Design & Innovation Club', icon: '🎨', glow: 'rgba(139,92,246,0.15)', color: '#8B5CF6' },
   { title: 'Google Gemini Student Ambassador', detail: 'Developer Relations Program', icon: '✨', glow: 'rgba(99,102,241,0.15)', color: '#6366F1' },
 ];

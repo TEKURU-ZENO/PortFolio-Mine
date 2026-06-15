@@ -133,7 +133,7 @@ export function HeroSection() {
               { val: '15+', label: 'Projects' },
               { val: '3',  label: 'Publications' },
               { val: '8+', label: 'Hackathons' },
-              { val: 'Rank #1', label: 'Academic' },
+              { val: 'Rank #1', label: '2025-26 Annual Day Award' },
             ].map(s => (
               <div key={s.label}>
                 <div style={{ fontFamily: FONT, fontSize: '26px', fontWeight: 800, letterSpacing: '-0.03em', color: '#A78BFA' }}>{s.val}</div>
