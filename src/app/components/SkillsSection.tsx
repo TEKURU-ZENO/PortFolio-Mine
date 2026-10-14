@@ -11,17 +11,19 @@ interface Edge { a: string; b: string }
 
 // Each hub's tools are laid out on a ring around it, starting at `start` degrees.
 const HUBS = [
-  { id: 'lang',    x: 170, y: 150, label: 'Languages',  color: '#C6F36B', ring: 100, start: -90,
-    items: ['Python', 'TypeScript/JS', 'Go', 'C#', 'Java', 'C++', 'R'] },
-  { id: 'agentic', x: 490, y: 150, label: 'Agentic AI', color: '#C6F36B', ring: 100, start: -90,
+  { id: 'agentic', x: 138, y: 140, label: 'Agentic AI', color: '#C6F36B', ring: 92,  start: -90,
     items: ['LangGraph', 'LLM Systems', 'RAG', 'Pydantic', 'Tool Calling'] },
-  { id: 'voice',   x: 810, y: 150, label: 'Voice AI',   color: '#C6F36B', ring: 95,  start: -135,
+  { id: 'voice',   x: 365, y: 140, label: 'Voice AI',   color: '#C6F36B', ring: 88,  start: -135,
     items: ['Whisper', 'LiveKit', 'WebRTC', 'Twilio/Telnyx'] },
-  { id: 'ml',      x: 170, y: 395, label: 'ML',         color: '#C6F36B', ring: 100, start: -90,
+  { id: 'ml',      x: 610, y: 140, label: 'ML',         color: '#C6F36B', ring: 92,  start: -90,
     items: ['PyTorch', 'HuggingFace', 'GNNs', 'XAI', 'Computer Vision'] },
-  { id: 'infra',   x: 490, y: 395, label: 'Infra',      color: '#C6F36B', ring: 100, start: -90,
+  { id: 'bio',     x: 855, y: 140, label: 'Bio AI',     color: '#C6F36B', ring: 92,  start: -90,
+    items: ['BioGPT', 'BioBERT', 'Scanpy', 'PyTorch Geometric', 'NetworkX'] },
+  { id: 'lang',    x: 190, y: 400, label: 'Languages',  color: '#C6F36B', ring: 98,  start: -90,
+    items: ['Python', 'TypeScript/JS', 'Go', 'C#', 'Java', 'C++', 'R'] },
+  { id: 'infra',   x: 490, y: 400, label: 'Infra',      color: '#C6F36B', ring: 98,  start: -90,
     items: ['Kafka', 'Kubernetes', 'Docker', 'Spark/Databricks', 'Redis', 'Prometheus'] },
-  { id: 'web',     x: 810, y: 395, label: 'Web',        color: '#C6F36B', ring: 110, start: -90,
+  { id: 'web',     x: 790, y: 400, label: 'Web',        color: '#C6F36B', ring: 108, start: -90,
     items: ['React', 'Next.js', 'Angular', 'React Native', 'Redux Toolkit', 'Tailwind', 'FastAPI', 'Django', '.NET'] },
 ];
 
@@ -47,6 +49,7 @@ const EDGES: Edge[] = [
   { a: 'langgraph', b: 'ml' }, { a: 'rag', b: 'ml' }, { a: 'toolcalling', b: 'voice' },
   { a: 'whisper', b: 'ml' }, { a: 'livekit', b: 'web' },
   { a: 'kafka', b: 'agentic' }, { a: 'redis', b: 'agentic' },
+  { a: 'python', b: 'bio' }, { a: 'biogpt', b: 'huggingface' }, { a: 'pytorchgeometric', b: 'gnns' },
   { a: 'fastapi', b: 'agentic' }, { a: 'typescriptjs', b: 'web' }, { a: 'csharp', b: 'web' },
 ];
 
