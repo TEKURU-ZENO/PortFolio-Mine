@@ -1,105 +1,204 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
+import { MONO } from '../theme';
+import { Arrow, Chips, Reveal, SectionHead, trackSpotlight } from './primitives';
 
-const FONT = "'Plus Jakarta Sans', system-ui, sans-serif";
-const MONO = "'JetBrains Mono', monospace";
+// ── Project diagrams (accent + neutrals; warm "alert" only marks a failure) ──
 
-// ── Project Visuals ───────────────────────────────────────────────────────────
-
-function NexusDiagram() {
+function HecateDiagram() {
+  const agents = [
+    { x: 40,  label: 'Detect' },  { x: 90,  label: 'Triage' },
+    { x: 140, label: 'RCA' },     { x: 190, label: 'Plan' },
+    { x: 240, label: 'Act' },     { x: 290, label: 'Verify' },
+    { x: 340, label: 'Report' },
+  ];
   return (
     <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
       <defs>
-        <filter id="nexus-glow">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
-      
-      {/* Central hub */}
-      <circle cx={190} cy={120} r={28} fill="rgba(124,58,237,0.15)" stroke="#7C3AED" strokeWidth="2" filter="url(#nexus-glow)" />
-      <text x={190} y={124} textAnchor="middle" fill="#F8FAFC" fontSize="10" fontFamily={MONO} fontWeight="600" letterSpacing="0.05em">PLANNER</text>
-
-      {/* 5 Agent nodes around the center */}
-      {[
-        { cx: 80,  cy: 70,  label: 'Execution', color: '#8B5CF6' },
-        { cx: 300, cy: 70,  label: 'Critique',  color: '#22D3EE' },
-        { cx: 80,  cy: 170, label: 'Memory',    color: '#6366F1' },
-        { cx: 300, cy: 170, label: 'Retrieval', color: '#10B981' },
-        { cx: 190, cy: 40,  label: 'Synthesis', color: '#A78BFA' },
-      ].map((agent) => (
-        <g key={agent.label}>
-          <line x1={190} y1={120} x2={agent.cx} y2={agent.cy} stroke={agent.color} strokeWidth="1" strokeOpacity="0.4" strokeDasharray="3 3" />
-          <circle cx={agent.cx} cy={agent.cy} r={20} fill="rgba(255,255,255,0.03)" stroke={agent.color} strokeWidth="1.5" />
-          <text x={agent.cx} y={agent.cy + 3} textAnchor="middle" fill="#CBD5E1" fontSize="8" fontFamily={MONO}>{agent.label}</text>
-        </g>
-      ))}
-
-      <text x={190} y={220} textAnchor="middle" fill="#475569" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">MULTI-AGENT COORDINATION WORKFLOW</text>
-    </svg>
-  );
-}
-
-function SeleneDiagram() {
-  return (
-    <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
-      <defs>
-        <filter id="selene-glow">
+        <filter id="hecate-glow">
           <feGaussianBlur stdDeviation="3" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
 
-      {/* Layer stack */}
-      {[
-        { y: 45,  label: 'TRUST & SECURITY',  sub: 'Auditing, verification & constraints', color: '#EF4444' },
-        { y: 95,  label: 'COGNITIVE ROUTING',  sub: 'Memory & planning dispatchers',        color: '#6366F1' },
-        { y: 145, label: 'DISTRIBUTED EXEC',   sub: 'Lease-bound DAG execution engine',     color: '#22D3EE' },
-      ].map((layer) => (
-        <g key={layer.label}>
-          <rect x={30} y={layer.y} width={320} height={34} rx="6" fill="rgba(255,255,255,0.02)" stroke={layer.color} strokeWidth="1" strokeOpacity="0.4" />
-          <text x={44} y={layer.y + 16} fill="#CBD5E1" fontSize="9" fontFamily={MONO} fontWeight="600" letterSpacing="0.05em">{layer.label}</text>
-          <text x={44} y={layer.y + 27} fill="#475569" fontSize="8" fontFamily={FONT}>{layer.sub}</text>
-          <circle cx={330} cy={layer.y + 17} r={4} fill={layer.color} filter="url(#selene-glow)" />
+      <text x={190} y={30} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">7 AGENTS · ONE KAFKA BUS</text>
+
+      {/* Agents */}
+      {agents.map(a => (
+        <g key={a.label}>
+          <line x1={a.x} y1={86} x2={a.x} y2={116} stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.4" strokeDasharray="2 3" />
+          <circle cx={a.x} cy={70} r={16} fill="rgba(198,243,107,0.08)" stroke="#C6F36B" strokeWidth="1.2" strokeOpacity="0.7" />
+          <text x={a.x} y={73} textAnchor="middle" fill="#D4D6DB" fontSize="7" fontFamily={MONO}>{a.label}</text>
         </g>
       ))}
 
-      <text x={190} y={210} textAnchor="middle" fill="#475569" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">3-LAYER COGNITIVE OPERATING ARCHITECTURE</text>
+      {/* Kafka bus */}
+      <rect x={20} y={116} width={340} height={22} rx="11" fill="rgba(198,243,107,0.1)" stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.5" filter="url(#hecate-glow)" />
+      <text x={190} y={131} textAnchor="middle" fill="#C6F36B" fontSize="9" fontFamily={MONO} letterSpacing="0.12em">KAFKA EVENT BUS</text>
+
+      {/* Targets */}
+      {[
+        { x: 40,  label: 'Kubernetes' },
+        { x: 150, label: 'Prometheus' },
+        { x: 260, label: 'Jaeger' },
+      ].map(t => (
+        <g key={t.label}>
+          <line x1={t.x + 40} y1={138} x2={t.x + 40} y2={170} stroke="#787C85" strokeWidth="1" strokeOpacity="0.5" />
+          <rect x={t.x} y={170} width={80} height={28} rx="6" fill="rgba(255,255,255,0.02)" stroke="#787C85" strokeWidth="1" strokeOpacity="0.5" />
+          <text x={t.x + 40} y={188} textAnchor="middle" fill="#A1A4AC" fontSize="9" fontFamily={MONO}>{t.label}</text>
+        </g>
+      ))}
     </svg>
   );
 }
 
-function AtlasDiagram() {
+function RecoupDiagram() {
   return (
     <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
       <defs>
-        <filter id="atlas-glow">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
+        <marker id="recoup-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#C6F36B" fillOpacity="0.7" />
+        </marker>
       </defs>
-      
-      {/* Cellular structure - graph */}
-      {[[90, 70], [130, 110], [80, 140], [200, 130], [250, 80], [290, 130], [180, 70]].map(([cx, cy], i) => (
-        <g key={i}>
-          <circle cx={cx} cy={cy} r={i === 3 ? 12 : 8} fill={i === 3 ? 'rgba(16,185,129,0.2)' : 'rgba(34,211,238,0.1)'} stroke={i === 3 ? '#10B981' : '#22D3EE'} strokeWidth="1.5" />
-          {i > 0 && (
-            <line x1={cx} y1={cy} x2={180} y2={70} stroke="#475569" strokeWidth="0.8" strokeOpacity="0.4" />
+
+      <text x={190} y={30} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">POLICY DECIDES · LLM ONLY WRITES</text>
+
+      {[
+        { x: 20,  w: 80, label: 'payment', sub: '.failed',   color: '#A1A4AC' },
+        { x: 120, w: 92, label: 'State',   sub: 'machine',   color: '#C6F36B' },
+        { x: 232, w: 64, label: 'LLM',     sub: 'copy only', color: '#C6F36B' },
+        { x: 316, w: 50, label: 'Send',    sub: 'validated', color: '#C6F36B' },
+      ].map((n, i, arr) => (
+        <g key={n.label}>
+          <rect x={n.x} y={78} width={n.w} height={52} rx="8" fill={`${n.color}12`} stroke={n.color} strokeWidth="1" strokeOpacity="0.7" />
+          <text x={n.x + n.w / 2} y={100} textAnchor="middle" fill="#D4D6DB" fontSize="10" fontFamily={MONO}>{n.label}</text>
+          <text x={n.x + n.w / 2} y={116} textAnchor="middle" fill={n.color} fontSize="8" fontFamily={MONO}>{n.sub}</text>
+          {i < arr.length - 1 && (
+            <line x1={n.x + n.w + 2} y1={104} x2={arr[i + 1].x - 4} y2={104} stroke="#C6F36B" strokeWidth="1.3" strokeOpacity="0.5" markerEnd="url(#recoup-arr)" />
           )}
         </g>
       ))}
-      <line x1={90} y1={70} x2={130} y2={110} stroke="#22D3EE" strokeWidth="1" strokeOpacity="0.5" />
-      <line x1={130} y1={110} x2={80} y2={140} stroke="#22D3EE" strokeWidth="1" strokeOpacity="0.5" />
-      <line x1={130} y1={110} x2={200} y2={130} stroke="#10B981" strokeWidth="1.2" strokeOpacity="0.6" />
-      <line x1={200} y1={130} x2={250} y2={80} stroke="#10B981" strokeWidth="1.2" strokeOpacity="0.6" />
-      <line x1={250} y1={80} x2={290} y2={130} stroke="#22D3EE" strokeWidth="1" strokeOpacity="0.5" />
-      <line x1={200} y1={130} x2={290} y2={130} stroke="#22D3EE" strokeWidth="1" strokeOpacity="0.5" />
 
-      {/* Target state transition arrow */}
-      <path d="M 230,170 Q 270,170 300,150" fill="none" stroke="#10B981" strokeWidth="1.5" strokeDasharray="3 3" />
-      <text x={230} y={185} fill="#10B981" fontSize="9" fontFamily={MONO}>CAUSAL TRANSITION</text>
+      {/* Pydantic guard */}
+      <rect x={226} y={142} width={140} height={22} rx="5" fill="none" stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.5" strokeDasharray="3 3" />
+      <text x={296} y={157} textAnchor="middle" fill="#C6F36B" fontSize="8" fontFamily={MONO}>Pydantic-validated payload</text>
 
-      <text x={190} y={215} textAnchor="middle" fill="#475569" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">SINGLE-CELL STATE GNN TRANSITIONS</text>
+      {/* Result strip */}
+      <rect x={40} y={184} width={300} height={28} rx="6" fill="rgba(198,243,107,0.08)" stroke="rgba(198,243,107,0.3)" strokeWidth="1" />
+      <text x={190} y={202} textAnchor="middle" fill="#C6F36B" fontSize="9" fontFamily={MONO} letterSpacing="0.06em">400 EVENTS · 100% LEGAL · 0% UNGROUNDED</text>
+    </svg>
+  );
+}
+
+function PersephoneDiagram() {
+  const nodes = [
+    { id: 'case',  x: 50,  y: 120, label: 'Case' },
+    { id: 'path',  x: 140, y: 70,  label: 'Pathology' },
+    { id: 'gen',   x: 140, y: 170, label: 'Genomics' },
+    { id: 'sim',   x: 240, y: 70,  label: 'Simulator' },
+    { id: 'cf',    x: 240, y: 170, label: 'What-if' },
+    { id: 'board', x: 330, y: 120, label: 'Board' },
+  ];
+  const edges = [['case', 'path'], ['case', 'gen'], ['path', 'sim'], ['gen', 'cf'], ['gen', 'sim'], ['sim', 'board'], ['cf', 'board']];
+  const at = (id: string) => nodes.find(n => n.id === id)!;
+  return (
+    <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
+      <defs>
+        <marker id="pers-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#C6F36B" fillOpacity="0.7" />
+        </marker>
+      </defs>
+      <text x={190} y={26} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">VIRTUAL TUMOR BOARD · AGENT DAG</text>
+      {edges.map(([a, b]) => {
+        const A = at(a), B = at(b);
+        const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy);
+        return (
+          <line key={a + b} x1={A.x + dx / len * 24} y1={A.y + dy / len * 24} x2={B.x - dx / len * 26} y2={B.y - dy / len * 26}
+            stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.45" markerEnd="url(#pers-arr)" />
+        );
+      })}
+      {nodes.map(n => (
+        <g key={n.id}>
+          <circle cx={n.x} cy={n.y} r={22} fill="rgba(198,243,107,0.08)" stroke="#C6F36B" strokeWidth="1.2" strokeOpacity={n.id === 'board' ? 1 : 0.6} />
+          <text x={n.x} y={n.y + 3} textAnchor="middle" fill="#D4D6DB" fontSize="8" fontFamily={MONO}>{n.label}</text>
+        </g>
+      ))}
+      <text x={190} y={222} textAnchor="middle" fill="#787C85" fontSize="8" fontFamily={MONO} letterSpacing="0.1em">OVER A BIOMEDICAL KNOWLEDGE GRAPH</text>
+    </svg>
+  );
+}
+
+function NexusGridDiagram() {
+  const pts = [[110, 140], [170, 120], [230, 145], [150, 185], [210, 195], [270, 180]];
+  return (
+    <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
+      <defs>
+        <marker id="grid-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#C6F36B" fillOpacity="0.7" />
+        </marker>
+      </defs>
+      <text x={190} y={26} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">TELEMETRY → DIGITAL TWIN → FORECAST</text>
+
+      {/* Pipeline */}
+      {[
+        { x: 20,  label: 'Kafka' },
+        { x: 110, label: 'Spark SS' },
+        { x: 200, label: 'Delta' },
+      ].map(n => (
+        <g key={n.label}>
+          <rect x={n.x} y={52} width={70} height={30} rx="6" fill="rgba(198,243,107,0.08)" stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.6" />
+          <text x={n.x + 35} y={71} textAnchor="middle" fill="#D4D6DB" fontSize="9" fontFamily={MONO}>{n.label}</text>
+          <line x1={n.x + 72} y1={67} x2={n.x + 86} y2={67} stroke="#C6F36B" strokeWidth="1.2" strokeOpacity="0.5" markerEnd="url(#grid-arr)" />
+        </g>
+      ))}
+      <rect x={290} y={52} width={70} height={30} rx="6" fill="rgba(198,243,107,0.14)" stroke="#C6F36B" strokeWidth="1" />
+      <text x={325} y={71} textAnchor="middle" fill="#C6F36B" fontSize="9" fontFamily={MONO}>Forecast</text>
+
+      {/* Neo4j dependency graph */}
+      <line x1={110} y1={140} x2={150} y2={185} stroke="#787C85" strokeWidth="0.9" strokeOpacity="0.6" />
+      {pts.map(([cx, cy], i) => (
+        <g key={i}>
+          {i > 0 && <line x1={pts[i - 1][0]} y1={pts[i - 1][1]} x2={cx} y2={cy} stroke="#787C85" strokeWidth="0.9" strokeOpacity="0.6" />}
+          <circle cx={cx} cy={cy} r={i === 2 ? 10 : 7} fill={i === 2 ? 'rgba(255,122,89,0.2)' : 'rgba(198,243,107,0.1)'} stroke={i === 2 ? '#FF7A59' : '#C6F36B'} strokeWidth="1.2" />
+        </g>
+      ))}
+      <text x={244} y={133} fill="#FF7A59" fontSize="8" fontFamily={MONO}>anomaly</text>
+      <text x={190} y={226} textAnchor="middle" fill="#787C85" fontSize="8" fontFamily={MONO} letterSpacing="0.1em">NEO4J INFRASTRUCTURE TWIN</text>
+    </svg>
+  );
+}
+
+function VoiceAgentDiagram() {
+  const bars = Array.from({ length: 34 }, (_, i) => 6 + Math.abs(Math.sin(i * 0.7) * 22) + (i % 3) * 3);
+  return (
+    <svg viewBox="0 0 380 240" style={{ width: '100%', height: 'auto' }}>
+      <text x={190} y={26} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">LIVE CALL · STREAMING TURNS</text>
+
+      {/* Caller waveform */}
+      <text x={20} y={66} fill="#787C85" fontSize="8" fontFamily={MONO}>CALLER</text>
+      {bars.slice(0, 20).map((h, i) => (
+        <rect key={'c' + i} x={70 + i * 7} y={62 - h / 2} width={3} height={h} rx="1.5" fill="#A1A4AC" fillOpacity="0.6" />
+      ))}
+
+      {/* Agent waveform, cut by barge-in */}
+      <text x={20} y={126} fill="#C6F36B" fontSize="8" fontFamily={MONO}>AGENT</text>
+      {bars.slice(10, 28).map((h, i) => (
+        <rect key={'a' + i} x={140 + i * 7} y={122 - h / 2} width={3} height={h} rx="1.5" fill="#C6F36B" fillOpacity={i > 9 ? 0.2 : 0.8} />
+      ))}
+      <line x1={210} y1={40} x2={210} y2={150} stroke="#FF7A59" strokeWidth="1" strokeDasharray="3 3" />
+      <text x={214} y={48} fill="#FF7A59" fontSize="8" fontFamily={MONO}>barge-in</text>
+
+      {/* Pipeline */}
+      {[
+        { x: 20,  label: 'Twilio' },
+        { x: 110, label: 'Whisper' },
+        { x: 200, label: 'Agent' },
+        { x: 290, label: 'Tools' },
+      ].map((n, i) => (
+        <g key={n.label}>
+          <rect x={n.x} y={176} width={70} height={28} rx="6" fill="rgba(198,243,107,0.08)" stroke="#C6F36B" strokeWidth="1" strokeOpacity="0.6" />
+          <text x={n.x + 35} y={194} textAnchor="middle" fill="#D4D6DB" fontSize="9" fontFamily={MONO}>{n.label}</text>
+          {i < 3 && <line x1={n.x + 72} y1={190} x2={n.x + 88} y2={190} stroke="#C6F36B" strokeWidth="1.2" strokeOpacity="0.5" />}
+        </g>
+      ))}
     </svg>
   );
 }
@@ -113,268 +212,197 @@ function BioGPTDiagram() {
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="#8B5CF6" fillOpacity="0.7" />
+          <path d="M0,0 L6,3 L0,6 Z" fill="#C6F36B" fillOpacity="0.7" />
         </marker>
       </defs>
 
       {/* Nodes */}
       {[
-        { x: 30,  label: 'PubMed',       sub: '40K papers', color: '#7C3AED' },
-        { x: 130, label: 'BioGPT',       sub: 'Base model', color: '#8B5CF6' },
-        { x: 230, label: 'Fine-tune',    sub: 'DDICorpus', color: '#A78BFA'  },
-        { x: 330, label: 'Classifier',   sub: '86.64% F1', color: '#22D3EE' },
+        { x: 30,  label: 'PubMed',       sub: '40K papers', color: '#C6F36B' },
+        { x: 130, label: 'BioGPT',       sub: 'Base model', color: '#C6F36B' },
+        { x: 230, label: 'Fine-tune',    sub: 'DDICorpus', color: '#C6F36B'  },
+        { x: 330, label: 'Classifier',   sub: '86.64% F1', color: '#C6F36B' },
       ].map((node, i) => (
         <g key={node.label}>
           <rect x={node.x - 38} y={80} width={76} height={48} rx="8"
             fill={`${node.color}12`} stroke={node.color} strokeWidth="1" strokeOpacity="0.7"
             filter="url(#bg-glow)"
           />
-          <text x={node.x} y={99} textAnchor="middle" fill="#CBD5E1" fontSize="10" fontFamily={MONO} letterSpacing="0.04em">{node.label}</text>
+          <text x={node.x} y={99} textAnchor="middle" fill="#D4D6DB" fontSize="10" fontFamily={MONO} letterSpacing="0.04em">{node.label}</text>
           <text x={node.x} y={115} textAnchor="middle" fill={node.color} fontSize="9" fontFamily={MONO} letterSpacing="0.04em" opacity="0.8">{node.sub}</text>
           {i < 3 && (
             <line x1={node.x + 38} y1={104} x2={node.x + 54} y2={104}
-              stroke="#7C3AED" strokeWidth="1.5" strokeOpacity="0.5" markerEnd="url(#arr)" />
+              stroke="#C6F36B" strokeWidth="1.5" strokeOpacity="0.5" markerEnd="url(#arr)" />
           )}
         </g>
       ))}
 
       {/* Result bar */}
-      <rect x={60} y={168} width={260} height={32} rx="6" fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.25)" strokeWidth="1" />
-      <rect x={60} y={168} width={220} height={32} rx="6" fill="rgba(34,211,238,0.12)" />
-      <text x={190} y={189} textAnchor="middle" fill="#22D3EE" fontSize="10" fontFamily={MONO} letterSpacing="0.08em">DDI DETECTION · F1 86.64%</text>
+      <rect x={60} y={168} width={260} height={32} rx="6" fill="rgba(198,243,107,0.06)" stroke="rgba(198,243,107,0.25)" strokeWidth="1" />
+      <rect x={60} y={168} width={220} height={32} rx="6" fill="rgba(198,243,107,0.12)" />
+      <text x={190} y={189} textAnchor="middle" fill="#C6F36B" fontSize="10" fontFamily={MONO} letterSpacing="0.08em">DDI DETECTION · F1 86.64%</text>
 
-      <text x={190} y={30} textAnchor="middle" fill="#475569" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">BIOGPT-DDI PIPELINE</text>
+      <text x={190} y={30} textAnchor="middle" fill="#787C85" fontSize="9" fontFamily={MONO} letterSpacing="0.14em">BIOGPT-DDI PIPELINE</text>
     </svg>
   );
 }
 
 // ── Data ───────────────────────────────────────────────────────────────────────
 
-const FEATURED = [
+type Featured = {
+  id: string; index: string; name: string; tagline: string;
+  desc: string; impact: string[]; stack: string[]; diagram: JSX.Element; github?: string;
+};
+
+const FEATURED: Featured[] = [
   {
-    id: 'nexus',
+    id: 'hecate',
     index: '01',
-    name: 'NEXUS',
-    tagline: 'Multi-Agent Strategic Intelligence Platform',
-    accent: '#7C3AED',
-    bg: 'linear-gradient(135deg, #08081a 0%, #0c0a20 100%)',
-    desc: 'An enterprise-scale agentic platform coordinating specialized AI agents through centralized planning, execution, memory, and critique workflows. Designed to transform fragmented information into decision-ready strategic intelligence.',
-    impact: ['5 specialized AI agents', 'Persistent memory architecture', 'Adversarial critique loops', 'Cross-session knowledge retention'],
-    stack: ['Python', 'FastAPI', 'LangGraph', 'Redis', 'React', 'Vector Databases'],
-    diagram: <NexusDiagram />,
-    github: 'https://github.com/TEKURU-ZENO',
+    name: 'HECATE',
+    tagline: 'Autonomous Reliability Platform',
+    desc: 'Seven agents talk over a Kafka bus to catch incidents, find the root cause and remediate on Kubernetes.',
+    impact: ['7 coordinating agents', 'Isolation Forest anomaly detection', 'Graph-based root cause analysis', 'Seed-controlled evaluation harness'],
+    stack: ['Python', 'Kafka', 'Kubernetes', 'Prometheus', 'Grafana', 'Jaeger'],
+    diagram: <HecateDiagram />,
+    github: 'https://github.com/TEKURU-ZENO/HECATE',
   },
   {
-    id: 'selene',
+    id: 'recoup',
     index: '02',
-    name: 'SELENE',
-    tagline: 'Ambient Cognitive Operating Layer',
-    accent: '#6366F1',
-    bg: 'linear-gradient(135deg, #06091b 0%, #090e29 100%)',
-    desc: 'A distributed AI operating layer built around trust, memory, execution, planning and reflection. Designed to make autonomous systems auditable, safe and scalable.',
-    impact: ['5 autonomous subsystems', '3-layer trust architecture', 'DAG-based execution', 'Lease-bound orchestration'],
-    stack: ['Kafka', 'Redis', 'Kubernetes', 'FastAPI', 'React'],
-    diagram: <SeleneDiagram />,
-    github: 'https://github.com/TEKURU-ZENO',
+    name: 'Recoup',
+    tagline: 'Payment Recovery Engine',
+    desc: 'A deterministic state machine decides what’s allowed on a failed payment. The LLM only writes the message, inside a validated payload.',
+    impact: ['132 tests', '20-seed paired benchmark', 'Shadow run over 400 payment.failed events, 100% policy legality', '0% ungrounded facts'],
+    stack: ['Python', 'FastAPI', 'Pydantic', 'Razorpay API', 'Next.js', 'LiveKit'],
+    diagram: <RecoupDiagram />,
+    github: 'https://github.com/TEKURU-ZENO/Recoup',
   },
   {
-    id: 'atlas',
+    id: 'persephone',
     index: '03',
-    name: 'ATLAS',
-    tagline: 'Causal Digital Twin for Single-Cell Simulation',
-    accent: '#10B981',
-    bg: 'linear-gradient(135deg, #050d0a 0%, #081510 100%)',
-    desc: 'A computational biology framework combining graph neural networks, temporal simulation and causal reasoning to predict cellular state transitions.',
-    impact: ['Biological digital twin', 'Active-learning experimentation', 'TRUST causal networks', 'Published research project'],
-    stack: ['PyTorch Geometric', 'Scanpy', 'NetworkX', 'Causal ML', 'Python'],
-    diagram: <AtlasDiagram />,
-    github: 'https://github.com/TEKURU-ZENO',
+    name: 'PERSEPHONE',
+    tagline: 'Precision Oncology Decision Support',
+    desc: 'A virtual tumor board. Agents run as a DAG over a biomedical knowledge graph, with a tumor-dynamics simulator and counterfactual “what if we changed therapy” reasoning.',
+    impact: ['Multi-agent tumor board DAG', 'Tumor dynamics simulator', 'Causal counterfactual engine', 'Biomedical knowledge graph'],
+    stack: ['JavaScript', 'HTML/CSS', 'Node.js'],
+    diagram: <PersephoneDiagram />,
+    github: 'https://github.com/TEKURU-ZENO/PERSEPHONE',
+  },
+  {
+    id: 'nexus-grid',
+    index: '04',
+    name: 'NEXUS GRID',
+    tagline: 'Infrastructure Intelligence',
+    desc: 'Streams infra telemetry through Spark, models the system as a dependency graph, and forecasts anomalies and capacity before they hit.',
+    impact: ['Spark Structured Streaming over Kafka', 'Neo4j infrastructure digital twin', 'PySpark ML anomaly and capacity forecasting', 'LLM + RAG infra copilot'],
+    stack: ['Spark', 'Kafka', 'Delta Lake', 'Neo4j', 'FastAPI', 'Go', 'Next.js', 'Three.js'],
+    diagram: <NexusGridDiagram />,
+  },
+  {
+    id: 'voice-agent',
+    index: '05',
+    name: 'Real-Time Voice Agent',
+    tagline: 'Telephony Voice AI',
+    desc: 'A phone agent that listens, gets interrupted, recovers, and calls tools while the call is still going.',
+    impact: ['Streaming Whisper STT', 'Barge-in and turn-taking', 'Mid-call tool calling', 'Twilio and Telnyx telephony'],
+    stack: ['Python', 'Whisper', 'LiveKit', 'WebRTC', 'Twilio', 'Telnyx'],
+    diagram: <VoiceAgentDiagram />,
   },
   {
     id: 'biogpt',
-    index: '04',
+    index: '06',
     name: 'BioGPT-DDI',
     tagline: 'Drug Interaction Intelligence System',
-    accent: '#8B5CF6',
-    bg: 'linear-gradient(135deg, #080820 0%, #0a0d28 100%)',
     desc: 'Graph-augmented biomedical NLP platform for drug-drug interaction prediction and explainable clinical reporting.',
     impact: ['F1 Score: 86.64%', 'DDI-2013 Benchmark', 'Explainable Reports', 'Published Research'],
     stack: ['BioGPT', 'BioBERT', 'PyTorch', 'FastAPI', 'React'],
     diagram: <BioGPTDiagram />,
-    github: 'https://github.com/TEKURU-ZENO',
+    github: 'https://github.com/TEKURU-ZENO/BioGPT-DDI',
   },
 ];
 
-const OTHER_PROJECTS = [
-  { name: 'Luxury Peaks',    desc: 'A premium hospitality and booking platform designed with a high-end, responsive booking interface.',  stack: ['React', 'Node.js', 'Tailwind CSS'], color: '#8B5CF6' },
-  { name: 'DesignVerse',     desc: 'A natural language to UI generator that converts plain English descriptions into React elements.',   stack: ['React', 'TypeScript', 'OpenAI API', 'Next.js'], color: '#7C3AED' },
-  { name: 'Harry Potter Sorting System', desc: 'An interactive frontend sorting ceremony application using classification reasoning.', stack: ['JavaScript', 'CSS', 'HTML5'], color: '#22D3EE' },
-  { name: 'Missing Value Prediction ML', desc: 'Machine learning pipeline optimizing data cleaning via custom predictive imputers.',   stack: ['Python', 'scikit-learn', 'Pandas'], color: '#10B981' },
-  { name: 'MedIntel AI',                 desc: 'A clinical reasoning dashboard that synthesizes patient symptoms for diagnostic assistance.', stack: ['Python', 'FastAPI', 'React', 'Transformers'], color: '#6366F1' },
+const OTHER_PROJECTS: { name: string; desc: string; stack: string[]; href?: string }[] = [
+  { name: 'VeriX',                       desc: 'Full-stack app with a network failure simulator built in, so resilience is tested, not assumed.', stack: ['Angular 17', 'TypeScript', 'Node', 'MongoDB', 'Docker'], href: 'https://github.com/TEKURU-ZENO/VeriX' },
+  { name: 'NOVA',                        desc: 'Windows desktop file organiser that watches folders and sorts in real time, with full undo history.', stack: ['C#', '.NET', 'WPF', 'SQLite'] },
+  { name: 'Diagnostic Booking Backend',  desc: 'Test booking with mock payments and idempotent webhooks. Built as a take-home for EVE Healthcare.', stack: ['Backend', 'Payments', 'Webhooks'], href: 'https://github.com/TEKURU-ZENO/Diagnostic-Healthcare-Booking-Payment-Backend' },
+  { name: 'FORGE / Nexus Studio',        desc: 'Collaborative AI dev workspace. I own the agent layer, including a browser agent that drives web actions on its own.', stack: ['Python', 'LangGraph', 'React'], href: 'https://github.com/anjali-0404/Multiagent' },
+  { name: 'OCR Document Reading System', desc: 'Hospital Information System plugin built with SIMS Chennai. Reads printed and handwritten medical documents, then digitises and summarises them.', stack: ['PaddleOCR', 'TrOCR', 'Gemini', 'React', 'FastAPI'] },
+  { name: 'Aperture 3.0',                desc: 'Upstream open-source contribution, merged.', stack: ['Open Source'] },
+  { name: 'DesignVerse',                 desc: 'A natural language to UI generator that converts plain English descriptions into React elements.', stack: ['React', 'TypeScript', 'OpenAI API', 'Next.js'], href: 'https://github.com/TEKURU-ZENO/Designverse' },
+  { name: 'Luxury Peaks',                desc: 'A premium hospitality and booking platform designed with a high-end, responsive booking interface.', stack: ['React', 'Node.js', 'Tailwind CSS'], href: 'https://github.com/TEKURU-ZENO/Luxury_Peaks' },
 ];
 
 export function FeaturedProjectsSection() {
-  const [hoveredOther, setHoveredOther] = useState<string | null>(null);
+  const total = String(FEATURED.length).padStart(2, '0');
 
   return (
-    <section id="projects" style={{ background: '#050816', borderTop: '1px solid rgba(124,58,237,0.07)' }}>
-      {/* Section header */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '80px 48px 0' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-        >
-          <span style={{ fontFamily: MONO, fontSize: '10px', letterSpacing: '0.26em', color: '#7C3AED' }}>FEATURED PROJECTS</span>
-          <h2 style={{ fontFamily: FONT, fontSize: 'clamp(32px,5vw,54px)', fontWeight: 700, color: '#F8FAFC', letterSpacing: '-0.03em', marginTop: '16px', lineHeight: 1.08 }}>
-            Selected Work
-          </h2>
-        </motion.div>
-      </div>
+    <section id="projects" className="section">
+      <div className="container">
+        <SectionHead
+          index="03"
+          label="Featured projects"
+          title={<>Selected <em>work</em></>}
+          intro="Six systems, each with a diagram of how it actually works. Repos are linked where the code is public."
+        />
 
-      {/* Featured cards */}
-      {FEATURED.map((project, pi) => (
-        <motion.div
-          key={project.id}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.8 }}
-          style={{
-            background: project.bg,
-            borderTop: `1px solid ${project.accent}14`,
-            padding: '72px 48px',
-          }}
-        >
-          <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: pi % 2 === 0 ? '1fr 420px' : '420px 1fr', gap: '72px', alignItems: 'center' }}>
-
-            {/* Left / Right based on index */}
-            <motion.div
-              initial={{ opacity: 0, x: pi % 2 === 0 ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.75, delay: 0.1 }}
-              style={{ order: pi % 2 === 0 ? 0 : 1 }}
-            >
-              <div style={{ fontFamily: MONO, fontSize: '10px', color: project.accent, letterSpacing: '0.18em', opacity: 0.6, marginBottom: '16px' }}>
-                {project.index} / 04
+        {FEATURED.map((project, pi) => (
+          <article key={project.id} className={`project${pi % 2 ? ' project--flip' : ''}`} aria-labelledby={`p-${project.id}`}>
+            <Reveal>
+              <div className="project-meta">
+                <b>{project.index}</b><span>/ {total}</span>
               </div>
-              <h3 style={{ fontFamily: FONT, fontSize: 'clamp(32px,4vw,56px)', fontWeight: 800, color: '#F8FAFC', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '8px' }}>
-                {project.name}
-              </h3>
-              <div style={{ fontFamily: MONO, fontSize: '11px', color: project.accent, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '24px' }}>
-                {project.tagline}
-              </div>
-              <p style={{ fontFamily: FONT, fontSize: '16px', color: '#64748B', lineHeight: 1.78, marginBottom: '28px', maxWidth: '480px' }}>
-                {project.desc}
-              </p>
-
-              {/* Impact */}
-              <div style={{ marginBottom: '28px' }}>
-                {project.impact.map((item, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: '10px' }}>
-                    <span style={{ color: project.accent, fontFamily: MONO, fontSize: '11px', flexShrink: 0, marginTop: '2px' }}>↗</span>
-                    <span style={{ fontFamily: FONT, fontSize: '14px', color: '#CBD5E1' }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Stack */}
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
-                {project.stack.map(t => (
-                  <span key={t} style={{
-                    fontFamily: MONO, fontSize: '10px', color: '#475569',
-                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: '4px', padding: '5px 12px', letterSpacing: '0.06em',
-                  }}>{t}</span>
-                ))}
-              </div>
-
-              {/* Links */}
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <a href={project.github} target="_blank" rel="noopener noreferrer"
-                  style={{
-                    fontFamily: FONT, fontSize: '13px', fontWeight: 600, color: project.accent,
-                    background: `${project.accent}12`, border: `1px solid ${project.accent}28`,
-                    borderRadius: '7px', padding: '10px 22px', textDecoration: 'none',
-                    transition: 'background 0.2s, border-color 0.2s',
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = `${project.accent}22`; e.currentTarget.style.borderColor = `${project.accent}50`; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = `${project.accent}12`; e.currentTarget.style.borderColor = `${project.accent}28`; }}
-                >
-                  GitHub <span style={{ fontSize: '11px' }}>↗</span>
+              <h3 id={`p-${project.id}`}>{project.name}</h3>
+              <p className="project-tagline">{project.tagline}</p>
+              <p className="project-desc">{project.desc}</p>
+              <ul className="tick-list">
+                {project.impact.map(item => <li key={item}>{item}</li>)}
+              </ul>
+              <Chips items={project.stack} />
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="link-arrow">
+                  View code on GitHub <Arrow />
                 </a>
-              </div>
-            </motion.div>
+              )}
+            </Reveal>
 
-            {/* Diagram panel */}
-            <motion.div
-              initial={{ opacity: 0, x: pi % 2 === 0 ? 20 : -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.75, delay: 0.18 }}
-              style={{
-                order: pi % 2 === 0 ? 1 : 0,
-                background: `${project.accent}05`,
-                border: `1px solid ${project.accent}14`,
-                borderRadius: '16px',
-                padding: '32px 24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '240px',
-              }}
-            >
-              {project.diagram}
-            </motion.div>
-          </div>
-        </motion.div>
-      ))}
-
-      {/* Other projects grid */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '80px 48px 120px' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }}
-          style={{ marginBottom: '40px' }}
-        >
-          <span style={{ fontFamily: MONO, fontSize: '10px', letterSpacing: '0.26em', color: '#334155' }}>OTHER WORK</span>
-        </motion.div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px' }}>
-          {OTHER_PROJECTS.map((p, i) => (
-            <motion.div
-              key={p.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.55, delay: i * 0.08 }}
-              onMouseEnter={() => setHoveredOther(p.name)}
-              onMouseLeave={() => setHoveredOther(null)}
-              style={{
-                background: '#0B1020',
-                border: `1px solid ${hoveredOther === p.name ? `${p.color}35` : 'rgba(124,58,237,0.08)'}`,
-                borderRadius: '12px', padding: '28px',
-                transition: 'border-color 0.3s, transform 0.3s',
-                transform: hoveredOther === p.name ? 'translateY(-3px)' : 'none',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                <span style={{ fontFamily: FONT, fontSize: '16px', fontWeight: 700, color: '#F8FAFC', letterSpacing: '-0.02em' }}>{p.name}</span>
-                <a href={`https://github.com/TEKURU-ZENO`} target="_blank" rel="noopener noreferrer"
-                  style={{ color: '#334155', fontSize: '13px', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = p.color)}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#334155')}
-                >↗</a>
+            <Reveal delay={0.1} className="project-visual card dot-grid">
+              <div role="img" aria-label={`${project.name} architecture diagram`} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                {project.diagram}
               </div>
-              <p style={{ fontFamily: FONT, fontSize: '13px', color: '#475569', lineHeight: 1.68, marginBottom: '16px' }}>{p.desc}</p>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {p.stack.map(t => (
-                  <span key={t} style={{ fontFamily: MONO, fontSize: '9px', color: p.color, background: `${p.color}0D`, border: `1px solid ${p.color}20`, borderRadius: '3px', padding: '3px 8px', letterSpacing: '0.05em' }}>{t}</span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+            </Reveal>
+          </article>
+        ))}
+
+        <Reveal className="other-head">
+          <h3>Other work</h3>
+          <span className="eyebrow">{OTHER_PROJECTS.length} projects</span>
+        </Reveal>
+
+        <div className="other-grid">
+          {OTHER_PROJECTS.map((p, i) => {
+            const body = (
+              <>
+                <div className="other-top">
+                  <h4>{p.name}</h4>
+                  {p.href && <Arrow />}
+                </div>
+                <p>{p.desc}</p>
+                <Chips items={p.stack} />
+              </>
+            );
+            return (
+              <Reveal key={p.name} delay={(i % 3) * 0.05} style={{ display: 'flex' }}>
+                {p.href ? (
+                  <a href={p.href} target="_blank" rel="noopener noreferrer" className="card spot other" onMouseMove={trackSpotlight} style={{ flex: 1 }}
+                    aria-label={`${p.name} (opens repository)`}>
+                    {body}
+                  </a>
+                ) : (
+                  <div className="card other" style={{ flex: 1 }}>{body}</div>
+                )}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

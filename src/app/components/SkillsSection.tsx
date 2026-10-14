@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-
-const FONT = "'Plus Jakarta Sans', system-ui, sans-serif";
-const MONO = "'JetBrains Mono', monospace";
+import { C, MONO } from '../theme';
+import { Chips, Reveal, SectionHead } from './primitives';
 
 interface Node {
   id: string; x: number; y: number; r: number;
@@ -10,63 +9,45 @@ interface Node {
 }
 interface Edge { a: string; b: string }
 
-const NODES: Node[] = [
-  // Hubs
-  { id: 'lang',    x: 175, y: 180, r: 30, label: 'Languages',      color: '#7C3AED', category: 'lang',    isHub: true },
-  { id: 'agentic', x: 490, y: 100, r: 30, label: 'Agentic AI',      color: '#8B5CF6', category: 'agentic', isHub: true },
-  { id: 'ml',      x: 810, y: 180, r: 30, label: 'Machine Learning',color: '#22D3EE', category: 'ml',      isHub: true },
-  { id: 'cloud',   x: 230, y: 390, r: 30, label: 'Cloud',          color: '#6366F1', category: 'cloud',   isHub: true },
-  { id: 'compbio', x: 760, y: 390, r: 30, label: 'Comp. Biology',  color: '#10B981', category: 'compbio', isHub: true },
-
-  // Languages child nodes
-  { id: 'py',   x: 72,  y: 110, r: 16, label: 'Python',     color: '#7C3AED', category: 'lang', isHub: false },
-  { id: 'java', x: 180, y: 72,  r: 16, label: 'Java',       color: '#7C3AED', category: 'lang', isHub: false },
-  { id: 'cpp',  x: 80,  y: 240, r: 14, label: 'C++',        color: '#7C3AED', category: 'lang', isHub: false },
-  { id: 'js',   x: 270, y: 130, r: 14, label: 'JavaScript',  color: '#7C3AED', category: 'lang', isHub: false },
-
-  // Agentic AI child nodes
-  { id: 'langgraph',  x: 540, y: 168, r: 16, label: 'LangGraph',   color: '#8B5CF6', category: 'agentic', isHub: false },
-  { id: 'llmsystems', x: 390, y: 45,  r: 16, label: 'LLM Systems', color: '#8B5CF6', category: 'agentic', isHub: false },
-  { id: 'rag',        x: 490, y: 28,  r: 14, label: 'RAG',         color: '#8B5CF6', category: 'agentic', isHub: false },
-  { id: 'memory',     x: 590, y: 52,  r: 14, label: 'Memory',      color: '#8B5CF6', category: 'agentic', isHub: false },
-  { id: 'planning',   x: 610, y: 128, r: 14, label: 'Planning',    color: '#8B5CF6', category: 'agentic', isHub: false },
-
-  // Machine Learning child nodes
-  { id: 'pytorch',     x: 760, y: 95,  r: 16, label: 'PyTorch',     color: '#22D3EE', category: 'ml', isHub: false },
-  { id: 'huggingface', x: 870, y: 95,  r: 16, label: 'HuggingFace', color: '#22D3EE', category: 'ml', isHub: false },
-  { id: 'gnns',        x: 920, y: 190, r: 14, label: 'GNNs',        color: '#22D3EE', category: 'ml', isHub: false },
-  { id: 'causalml',    x: 855, y: 275, r: 14, label: 'Causal ML',   color: '#22D3EE', category: 'ml', isHub: false },
-  { id: 'xai',         x: 750, y: 275, r: 14, label: 'XAI',         color: '#22D3EE', category: 'ml', isHub: false },
-
-  // Cloud child nodes
-  { id: 'k8s',           x: 265, y: 460, r: 16, label: 'Kubernetes',   color: '#6366F1', category: 'cloud', isHub: false },
-  { id: 'kafka',         x: 110, y: 340, r: 16, label: 'Kafka',        color: '#6366F1', category: 'cloud', isHub: false },
-  { id: 'redis',         x: 185, y: 330, r: 14, label: 'Redis',        color: '#6366F1', category: 'cloud', isHub: false },
-  { id: 'docker',        x: 145, y: 440, r: 14, label: 'Docker',       color: '#6366F1', category: 'cloud', isHub: false },
-  { id: 'microservices', x: 345, y: 365, r: 14, label: 'Microservices',color: '#6366F1', category: 'cloud', isHub: false },
-
-  // Computational Biology child nodes
-  { id: 'scanpy',       x: 665, y: 345, r: 16, label: 'Scanpy',       color: '#10B981', category: 'compbio', isHub: false },
-  { id: 'networkx',     x: 870, y: 340, r: 16, label: 'NetworkX',     color: '#10B981', category: 'compbio', isHub: false },
-  { id: 'multiomics',   x: 685, y: 445, r: 14, label: 'Multi-Omics',  color: '#10B981', category: 'compbio', isHub: false },
-  { id: 'biogpt',       x: 820, y: 450, r: 14, label: 'BioGPT',       color: '#10B981', category: 'compbio', isHub: false },
-  { id: 'digitaltwins', x: 800, y: 490, r: 14, label: 'Digital Twins',color: '#10B981', category: 'compbio', isHub: false },
-  { id: 'biomarkers',   x: 880, y: 460, r: 15, label: 'Biomarkers',   color: '#10B981', category: 'compbio', isHub: false },
+// Each hub's tools are laid out on a ring around it, starting at `start` degrees.
+const HUBS = [
+  { id: 'lang',    x: 170, y: 150, label: 'Languages',  color: '#C6F36B', ring: 100, start: -90,
+    items: ['Python', 'TypeScript/JS', 'Go', 'C#', 'Java', 'C++', 'R'] },
+  { id: 'agentic', x: 490, y: 150, label: 'Agentic AI', color: '#C6F36B', ring: 100, start: -90,
+    items: ['LangGraph', 'LLM Systems', 'RAG', 'Pydantic', 'Tool Calling'] },
+  { id: 'voice',   x: 810, y: 150, label: 'Voice AI',   color: '#C6F36B', ring: 95,  start: -135,
+    items: ['Whisper', 'LiveKit', 'WebRTC', 'Twilio/Telnyx'] },
+  { id: 'ml',      x: 170, y: 395, label: 'ML',         color: '#C6F36B', ring: 100, start: -90,
+    items: ['PyTorch', 'HuggingFace', 'GNNs', 'XAI', 'Computer Vision'] },
+  { id: 'infra',   x: 490, y: 395, label: 'Infra',      color: '#C6F36B', ring: 100, start: -90,
+    items: ['Kafka', 'Kubernetes', 'Docker', 'Spark/Databricks', 'Redis', 'Prometheus'] },
+  { id: 'web',     x: 810, y: 395, label: 'Web',        color: '#C6F36B', ring: 110, start: -90,
+    items: ['React', 'Next.js', 'Angular', 'React Native', 'Redux Toolkit', 'Tailwind', 'FastAPI', 'Django', '.NET'] },
 ];
+
+const slug = (label: string) => label.toLowerCase().replace(/#/g, 'sharp').replace(/\+/g, 'p').replace(/[^a-z0-9]+/g, '');
+
+const NODES: Node[] = HUBS.flatMap(h => [
+  { id: h.id, x: h.x, y: h.y, r: 30, label: h.label, color: h.color, category: h.id, isHub: true },
+  ...h.items.map((label, k) => {
+    const a = (h.start + (360 / h.items.length) * k) * Math.PI / 180;
+    return {
+      id: slug(label), x: Math.round(h.x + Math.cos(a) * h.ring), y: Math.round(h.y + Math.sin(a) * h.ring),
+      r: 14, label, color: h.color, category: h.id, isHub: false,
+    };
+  }),
+]);
 
 const EDGES: Edge[] = [
   // Hub -> Child connections
-  { a: 'lang', b: 'py' }, { a: 'lang', b: 'java' }, { a: 'lang', b: 'cpp' }, { a: 'lang', b: 'js' },
-  { a: 'agentic', b: 'langgraph' }, { a: 'agentic', b: 'llmsystems' }, { a: 'agentic', b: 'rag' }, { a: 'agentic', b: 'memory' }, { a: 'agentic', b: 'planning' },
-  { a: 'ml', b: 'pytorch' }, { a: 'ml', b: 'huggingface' }, { a: 'ml', b: 'gnns' }, { a: 'ml', b: 'causalml' }, { a: 'ml', b: 'xai' },
-  { a: 'cloud', b: 'k8s' }, { a: 'cloud', b: 'kafka' }, { a: 'cloud', b: 'redis' }, { a: 'cloud', b: 'docker' }, { a: 'cloud', b: 'microservices' },
-  { a: 'compbio', b: 'scanpy' }, { a: 'compbio', b: 'networkx' }, { a: 'compbio', b: 'multiomics' }, { a: 'compbio', b: 'biogpt' }, { a: 'compbio', b: 'digitaltwins' }, { a: 'compbio', b: 'biomarkers' },
+  ...HUBS.flatMap(h => h.items.map(label => ({ a: h.id, b: slug(label) }))),
 
   // Cross-category connections
-  { a: 'py', b: 'ml' }, { a: 'py', b: 'compbio' },
-  { a: 'pytorch', b: 'agentic' }, { a: 'langgraph', b: 'ml' }, { a: 'rag', b: 'ml' },
-  { a: 'biogpt', b: 'ml' }, { a: 'digitaltwins', b: 'ml' },
-  { a: 'docker', b: 'cloud' }, { a: 'kafka', b: 'agentic' }, { a: 'redis', b: 'agentic' }
+  { a: 'python', b: 'ml' }, { a: 'python', b: 'agentic' }, { a: 'python', b: 'voice' },
+  { a: 'langgraph', b: 'ml' }, { a: 'rag', b: 'ml' }, { a: 'toolcalling', b: 'voice' },
+  { a: 'whisper', b: 'ml' }, { a: 'livekit', b: 'web' },
+  { a: 'kafka', b: 'agentic' }, { a: 'redis', b: 'agentic' },
+  { a: 'fastapi', b: 'agentic' }, { a: 'typescriptjs', b: 'web' }, { a: 'csharp', b: 'web' },
 ];
 
 function getNode(id: string): Node { return NODES.find(n => n.id === id)!; }
@@ -86,47 +67,35 @@ export function SkillsSection() {
   };
 
   return (
-    <section id="skills" style={{ background: '#050816', padding: '120px 48px', borderTop: '1px solid rgba(124,58,237,0.07)' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.7 }}
-          style={{ marginBottom: '56px' }}
-        >
-          <span style={{ fontFamily: MONO, fontSize: '10px', letterSpacing: '0.26em', color: '#7C3AED' }}>SKILLS ARCHITECTURE</span>
-          <h2 style={{ fontFamily: FONT, fontSize: 'clamp(32px,5vw,54px)', fontWeight: 700, color: '#F8FAFC', letterSpacing: '-0.03em', marginTop: '16px', lineHeight: 1.08 }}>
-            The Toolkit
-          </h2>
-          <p style={{ fontFamily: FONT, fontSize: '15px', color: '#475569', marginTop: '12px' }}>
-            Hover any node to explore connections.
-          </p>
-        </motion.div>
+    <section id="skills" className="section">
+      <div className="container">
+        <SectionHead
+          index="06"
+          label="Skills architecture"
+          title={<>The <em>toolkit</em></>}
+          intro="Grouped by what they're used for. Hover a node to see how the pieces connect."
+        />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          style={{
-            background: '#070D1C',
-            border: '1px solid rgba(124,58,237,0.1)',
-            borderRadius: '20px',
-            overflow: 'hidden',
-          }}
-        >
+        {/* Small screens: plain grouped list instead of the graph. */}
+        <div className="skills-list">
+          {HUBS.map(h => (
+            <div key={h.id}>
+              <h3>{h.label}</h3>
+              <Chips items={h.items} />
+            </div>
+          ))}
+        </div>
+
+        <Reveal className="skills-graph card dot-grid">
           <svg
             viewBox="0 0 980 540"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           >
             <defs>
-              {['purple','blue','cyan','indigo','emerald'].map((name) => {
-                return (
-                  <filter key={name} id={`sk-glow-${name}`} x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="8" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                  </filter>
-                );
-              })}
+              <filter id="sk-glow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
             </defs>
 
             {/* Edges */}
@@ -136,9 +105,9 @@ export function SkillsSection() {
               return (
                 <line key={i}
                   x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                  stroke={active ? a.color : '#1E293B'}
+                  stroke={active ? C.accent : 'rgba(255,255,255,0.09)'}
                   strokeWidth={active ? 1.5 : 0.8}
-                  strokeOpacity={active ? 0.7 : 0.5}
+                  strokeOpacity={active ? 0.75 : 1}
                   style={{ transition: 'stroke 0.25s, stroke-opacity 0.25s, stroke-width 0.25s' }}
                 />
               );
@@ -148,41 +117,39 @@ export function SkillsSection() {
             {NODES.map((node, i) => {
               const conn = isConnected(node.id);
               const isHov = hovered === node.id;
-              const glowMap: Record<string, string> = { lang: 'purple', agentic: 'blue', ml: 'cyan', cloud: 'indigo', compbio: 'emerald' };
-              const filterId = `sk-glow-${glowMap[node.category]}`;
 
               return (
                 <g
                   key={node.id}
                   onMouseEnter={() => setHovered(node.id)}
                   onMouseLeave={() => setHovered(null)}
-                  style={{ cursor: 'pointer', opacity: conn ? 1 : 0.12, transition: 'opacity 0.25s' }}
+                  style={{ cursor: 'default', opacity: conn ? 1 : 0.15, transition: 'opacity 0.25s' }}
                 >
                   {/* Pulse ring for hubs */}
                   {node.isHub && (
-                    <motion.circle
+                    <circle
+                      className="hub-pulse"
                       cx={node.x} cy={node.y} r={node.r + 8}
-                      fill="none" stroke={node.color} strokeWidth="1"
-                      animate={{ r: [node.r + 6, node.r + 14, node.r + 6], strokeOpacity: isHov ? [0.5, 0.8, 0.5] : [0.06, 0.14, 0.06] }}
-                      transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: 'easeInOut' }}
+                      fill="none" stroke={C.accent} strokeWidth="1"
+                      style={{ animationDelay: `${i * -0.4}s`, opacity: isHov ? 0.8 : undefined }}
                     />
                   )}
 
                   <motion.circle
                     cx={node.x} cy={node.y} r={node.r}
-                    fill={isHov ? `${node.color}22` : `${node.color}0E`}
-                    stroke={node.color}
+                    fill={node.isHub ? (isHov ? 'rgba(198,243,107,0.16)' : 'rgba(198,243,107,0.06)') : (isHov ? 'rgba(198,243,107,0.12)' : C.surface2)}
+                    stroke={node.isHub || isHov ? C.accent : 'rgba(255,255,255,0.16)'}
                     strokeWidth={node.isHub ? (isHov ? 2 : 1.5) : (isHov ? 1.5 : 1)}
-                    strokeOpacity={isHov ? 1 : 0.55}
-                    filter={isHov ? `url(#${filterId})` : undefined}
+                    strokeOpacity={isHov ? 1 : node.isHub ? 0.6 : 1}
+                    filter={isHov ? 'url(#sk-glow)' : undefined}
                     style={{ transition: 'all 0.25s' }}
                   />
 
                   <text
                     x={node.x} y={node.y + (node.isHub ? 5 : 4)}
                     textAnchor="middle"
-                    fill={isHov ? '#F8FAFC' : conn ? '#64748B' : '#1E293B'}
-                    fontSize={node.isHub ? '11' : '9'}
+                    fill={isHov ? C.text : node.isHub ? C.text : C.text2}
+                    fontSize={node.isHub ? '12' : '10'}
                     fontFamily={MONO}
                     fontWeight={node.isHub ? '600' : '400'}
                     letterSpacing="0.06em"
@@ -194,7 +161,7 @@ export function SkillsSection() {
               );
             })}
           </svg>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

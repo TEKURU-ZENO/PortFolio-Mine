@@ -7,22 +7,24 @@ import { FeaturedProjectsSection } from './components/FeaturedProjectsSection';
 import { ResearchSection }         from './components/ResearchSection';
 import { JourneySection }          from './components/JourneySection';
 import { SkillsSection }           from './components/SkillsSection';
-import { JournalSection }          from './components/JournalSection';
 import { ContactSection }          from './components/ContactSection';
 
 export default function App() {
   return (
-    <div style={{ background: '#050816', color: '#F8FAFC', overflowX: 'hidden', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <>
+      <a href="#main" className="skip-link">Skip to content</a>
       <NavBar />
-      <HeroSection />
-      <NumbersSection />
-      <FocusAreasSection />
-      <FeaturedProjectsSection />
-      <ResearchSection />
-      <JourneySection />
-      <SkillsSection />
-      <JournalSection />
-      <ContactSection />
-    </div>
+      <main id="main" style={{ overflowX: 'clip' }}>
+        <HeroSection />
+        <NumbersSection />
+        <FocusAreasSection />
+        <FeaturedProjectsSection />
+        <ResearchSection />
+        <JourneySection />
+        <SkillsSection />
+        <ContactSection />
+      </main>
+      <div className="grain" aria-hidden="true" />
+    </>
   );
 }

@@ -1,27 +1,26 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'motion/react';
-
-const FONT = "'Plus Jakarta Sans', system-ui, sans-serif";
-const MONO = "'JetBrains Mono', monospace";
+import { EASE } from '../theme';
+import { Eyebrow, Reveal } from './primitives';
 
 const STATS = [
-  { value: 4,  prefix: '',    suffix: '+', label: 'Research Systems',  desc: 'Advanced autonomous agents and simulation architectures developed' },
-  { value: 3,  prefix: '',    suffix: '',  label: 'Publications',      desc: 'Peer-reviewed research and proceedings on AI for Science and drug discovery' },
-  { value: 8,  prefix: '',    suffix: '+', label: 'Hackathons',        desc: 'Competed and placed across AI, biomedical, and systems engineering challenges' },
-  { value: 1000, prefix: 'Top ', suffix: '',  label: 'OpenAI × Outskill', desc: 'Recognized builders selected globally for the OpenAI Developer cohort' },
+  { value: 4,    prefix: '',    label: 'Publications',      desc: 'Peer-reviewed papers across surgical AI, single-cell biology, oncology and drug safety' },
+  { value: 3,    prefix: '',    label: 'Internships',       desc: 'Regacore, Airawat Research Foundation (IIT Kanpur CoE), Sri Jayaram Infotech' },
+  { value: 3,    prefix: '',    label: 'Hackathon podiums', desc: 'Winner, Wobble Designverse · 3rd, AceInt · Top 4 of 300+, Swan Botanicals' },
+  { value: 1000, prefix: 'Top', label: 'OpenAI × Outskill', desc: 'Selected builder in the OpenAI developer cohort' },
 ];
 
-function useCountUp(target: number, inView: boolean, duration = 1600) {
+function useCountUp(target: number, inView: boolean, duration = 1400) {
   const [count, setCount] = useState(0);
-  const t0  = useRef<number | null>(null);
   const raf = useRef(0);
 
   useEffect(() => {
     if (!inView) return;
-    t0.current = null;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setCount(target); return; }
+    let t0: number | null = null;
     const tick = (ts: number) => {
-      if (!t0.current) t0.current = ts;
-      const p = Math.min((ts - t0.current) / duration, 1);
+      t0 ??= ts;
+      const p = Math.min((ts - t0) / duration, 1);
       setCount(Math.round((1 - Math.pow(1 - p, 3)) * target));
       if (p < 1) raf.current = requestAnimationFrame(tick);
     };
@@ -32,62 +31,37 @@ function useCountUp(target: number, inView: boolean, duration = 1600) {
   return count;
 }
 
-function Stat({ value, prefix, suffix, label, desc, index }: typeof STATS[0] & { index: number }) {
-  const ref    = useRef<HTMLDivElement>(null);
+function Stat({ value, prefix, label, desc, index }: typeof STATS[0] & { index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
-  const count  = useCountUp(value, inView);
+  const count = useCountUp(value, inView);
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 28 }}
+      className="stat"
+      initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay: index * 0.12, ease: 'easeOut' }}
-      style={{ textAlign: 'center', padding: '0 24px' }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: EASE }}
     >
-      <div style={{
-        fontFamily: FONT, fontSize: 'clamp(38px, 5vw, 68px)',
-        fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.04em',
-        background: 'linear-gradient(135deg, #C4B5FD 0%, #7C3AED 100%)',
-        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-        marginBottom: '16px',
-      }}>
-        {prefix}{count}{suffix}
+      <div className="stat-value tnum" aria-label={`${prefix} ${value}`.trim()}>
+        {prefix && <small>{prefix}</small>}{count}
       </div>
-      <div style={{ fontFamily: FONT, fontSize: '15px', fontWeight: 600, color: '#CBD5E1', marginBottom: '10px', letterSpacing: '-0.01em' }}>
-        {label}
-      </div>
-      <div style={{ fontFamily: FONT, fontSize: '13px', color: '#334155', lineHeight: 1.65, maxWidth: '210px', margin: '0 auto' }}>
-        {desc}
-      </div>
+      <div className="stat-label">{label}</div>
+      <p className="stat-desc">{desc}</p>
     </motion.div>
   );
 }
 
 export function NumbersSection() {
   return (
-    <section style={{ background: '#050816', padding: '120px 48px', borderTop: '1px solid rgba(124,58,237,0.07)' }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <motion.div
-          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }}
-          style={{ textAlign: 'center', marginBottom: '80px' }}
-        >
-          <span style={{ fontFamily: MONO, fontSize: '10px', letterSpacing: '0.26em', color: '#7C3AED' }}>BY THE NUMBERS</span>
-        </motion.div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0' }}>
-          {STATS.map((s, i) => (
-            <div key={s.label} style={{ position: 'relative' }}>
-              {i > 0 && (
-                <div style={{
-                  position: 'absolute', left: 0, top: '15%', height: '70%', width: '1px',
-                  background: 'linear-gradient(to bottom, transparent, rgba(124,58,237,0.18), transparent)',
-                }} />
-              )}
-              <Stat {...s} index={i} />
-            </div>
-          ))}
+    <section className="section" aria-label="By the numbers" style={{ paddingBlock: 'clamp(72px, 9vw, 112px)' }}>
+      <div className="container">
+        <Reveal style={{ marginBottom: 'clamp(40px, 5vw, 56px)' }}>
+          <Eyebrow index="01">By the numbers</Eyebrow>
+        </Reveal>
+        <div className="stats-grid">
+          {STATS.map((s, i) => <Stat key={s.label} {...s} index={i} />)}
         </div>
       </div>
     </section>
