@@ -58,8 +58,6 @@ export function ResearchSection() {
     <section id="research" className="section">
       <div className="container">
         <SectionHead
-          index="04"
-          label="Research"
           title={<>Peer-reviewed <em>publications</em></>}
           intro="Four papers across surgical AI, single-cell biology, precision oncology and drug safety."
         />

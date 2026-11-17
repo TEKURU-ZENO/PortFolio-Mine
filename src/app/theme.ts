@@ -16,6 +16,5 @@ export const C = {
 
 export const FONT = "'Geist', system-ui, sans-serif";
 export const MONO = "'Geist Mono', ui-monospace, monospace";
-export const SERIF = "'Instrument Serif', Georgia, serif";
 
 export const EASE = [0.16, 1, 0.3, 1] as const;

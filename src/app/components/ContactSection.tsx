@@ -1,4 +1,4 @@
-import { Arrow, Chips, Eyebrow, Reveal } from './primitives';
+import { Arrow, Chips, Eyebrow, MaskText, Reveal } from './primitives';
 
 const LINKS = [
   { label: 'Email',    value: 'devmehta060505@gmail.com',            href: 'mailto:devmehta060505@gmail.com' },
@@ -15,9 +15,9 @@ export function ContactSection() {
       <div className="container">
         <div className="contact-grid">
           <Reveal>
-            <Eyebrow index="07">Contact</Eyebrow>
+            <Eyebrow>Contact</Eyebrow>
             <h2 className="contact-title">
-              Let’s build something <em>meaningful.</em>
+              <MaskText>Let’s build something <em>meaningful.</em></MaskText>
             </h2>
             <p className="lede">
               I’m open to research collaborations, engineering roles, and ambitious projects at the
@@ -25,7 +25,7 @@ export function ContactSection() {
             </p>
 
             <div className="contact-meta">
-              <div><span className="status-dot" aria-hidden="true" /> Open to roles now · Chennai, open to relocation</div>
+              <div>Open to roles now. Based in Chennai, open to relocation.</div>
               <div>Languages: English, Hindi, Tamil</div>
             </div>
 
@@ -55,8 +55,8 @@ export function ContactSection() {
         </div>
 
         <footer className="footer">
-          <span>Dev Mehta · AI/ML Engineer · Chennai</span>
-          <span>© 2026 · <a href="#top">Back to top ↑</a></span>
+          <span>Dev Mehta, AI/ML Engineer</span>
+          <a href="#top">Back to top ↑</a>
         </footer>
       </div>
     </section>

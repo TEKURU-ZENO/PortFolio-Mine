@@ -70,13 +70,14 @@ const ACHIEVEMENTS = [
   { title: 'President', detail: 'Design & Innovation Club' },
 ];
 
+/** "JUN 2026" to "Jun 2026". */
+const titleMonth = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
+
 export function JourneySection() {
   return (
     <section id="journey" className="section">
       <div className="container">
         <SectionHead
-          index="05"
-          label="Experience & achievements"
           title={<>Journey &amp; <em>track record</em></>}
           intro="Three internships shipping to real users, alongside a full-time B.Tech in Computer Science."
         />
@@ -84,12 +85,12 @@ export function JourneySection() {
         {/* ── Work experience ── */}
         <div>
           {EXPERIENCES.map((exp, idx) => {
-            const [from, to] = exp.duration.split(/\s+—\s+/);
+            const [from, to] = exp.duration.split(/\s+—\s+/).map(titleMonth);
             return (
               <Reveal key={exp.company} delay={idx * 0.05}>
                 <article className="exp">
                   <div className="exp-when tnum">
-                    {from} — {to === 'PRESENT' ? <span className="now">Present</span> : to}
+                    {from} - {to === 'Present' ? <span className="now">Present</span> : to}
                   </div>
                   <div>
                     <h3>{exp.role}</h3>

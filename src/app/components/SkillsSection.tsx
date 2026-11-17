@@ -73,8 +73,6 @@ export function SkillsSection() {
     <section id="skills" className="section">
       <div className="container">
         <SectionHead
-          index="06"
-          label="Skills architecture"
           title={<>The <em>toolkit</em></>}
           intro="Grouped by what they're used for. Hover a node to see how the pieces connect."
         />

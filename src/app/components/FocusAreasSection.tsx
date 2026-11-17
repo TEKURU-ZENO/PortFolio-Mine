@@ -28,8 +28,6 @@ export function FocusAreasSection() {
     <section id="focus" className="section">
       <div className="container">
         <SectionHead
-          index="02"
-          label="Focus areas"
           title={<>What I <em>build</em></>}
           intro="Four areas I keep coming back to. They share one habit: decide what the system is allowed to do, then measure whether it did."
         />

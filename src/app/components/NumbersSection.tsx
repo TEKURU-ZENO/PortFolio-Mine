@@ -6,7 +6,7 @@ import { Eyebrow, Reveal } from './primitives';
 const STATS = [
   { value: 4,    prefix: '',    label: 'Publications',      desc: 'Peer-reviewed papers across surgical AI, single-cell biology, oncology and drug safety' },
   { value: 3,    prefix: '',    label: 'Internships',       desc: 'Regacore, Airawat Research Foundation (IIT Kanpur CoE), Sri Jayaram Infotech' },
-  { value: 3,    prefix: '',    label: 'Hackathon podiums', desc: 'Winner, Wobble Designverse · 3rd, AceInt · Top 4 of 300+, Swan Botanicals' },
+  { value: 3,    prefix: '',    label: 'Hackathon podiums', desc: 'Winner at Wobble Designverse, 3rd at AceInt, top 4 of 300+ at Swan Botanicals' },
   { value: 1000, prefix: 'Top', label: 'OpenAI × Outskill', desc: 'Selected builder in the OpenAI developer cohort' },
 ];
 
@@ -58,7 +58,7 @@ export function NumbersSection() {
     <section className="section" aria-label="By the numbers" style={{ paddingBlock: 'clamp(72px, 9vw, 112px)' }}>
       <div className="container">
         <Reveal style={{ marginBottom: 'clamp(40px, 5vw, 56px)' }}>
-          <Eyebrow index="01">By the numbers</Eyebrow>
+          <Eyebrow>By the numbers</Eyebrow>
         </Reveal>
         <div className="stats-grid">
           {STATS.map((s, i) => <Stat key={s.label} {...s} index={i} />)}
